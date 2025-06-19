@@ -1,8 +1,8 @@
 using System;
 using Microsoft.Extensions.Caching.Memory;
-using UrlAlias.Models;
+using Ulr_Alias.Models;
 
-namespace UrlAlias.Services;
+namespace Ulr_Alias.Services;
 
 public class AliasService : IAliasService
 {
@@ -15,7 +15,7 @@ public class AliasService : IAliasService
 
     public string? TryGet(string alias)
     {
-        
+
         return _cache.TryGetValue<string>(alias, out var url) ? url : null;
     }
 

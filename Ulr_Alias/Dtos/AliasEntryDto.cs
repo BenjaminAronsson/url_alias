@@ -1,8 +1,8 @@
 using System;
 using System.ComponentModel;
-using UrlAlias.Models;
+using Ulr_Alias.Models;
 
-namespace UrlAlias.Dtos;
+namespace Ulr_Alias.Dtos;
 
 public class AliasEntryDto
 {

@@ -1,8 +1,9 @@
-using UrlAlias.Dtos;
-using UrlAlias.Models;
-using UrlAlias.Services;
+using Ulr_Alias.Dtos;
+using Ulr_Alias.Models;
+using Ulr_Alias.Services;
+using Ulr_Alias.Validators;
 
-namespace UrlAlias.Extensions;
+namespace Ulr_Alias.Extensions;
 
 public static class AliasEndpointExtensions
 {
@@ -11,9 +12,9 @@ public static class AliasEndpointExtensions
 
         app.MapGet("/{alias}", (string alias, HttpContext context, IAliasService svc) =>
         {
-            var fallback =  "https://" + context.Request.Host.ToString() + "/swagger/index.html";
+            var fallback = "https://" + context.Request.Host.ToString() + "/swagger/index.html";
             var aliases = svc.TryGet(alias);
-            
+
             return aliases is not null
                 ? Results.Redirect(aliases)
                 : Results.Redirect(fallback);
@@ -35,7 +36,7 @@ public static class AliasEndpointExtensions
             // Generate alias if not provided
             if (string.IsNullOrWhiteSpace(input.Alias))
                 input.Alias = shortener.GenerateAlias(input.Url);
-            
+
             var result = svc.Add(input.ToDomain());
 
             //get host

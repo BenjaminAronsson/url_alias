@@ -1,6 +1,6 @@
 using System;
 
-namespace UrlAlias;
+namespace Ulr_Alias.Validators;
 
 public static class UrlValidator
 {

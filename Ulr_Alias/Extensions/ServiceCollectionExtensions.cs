@@ -1,6 +1,6 @@
-using UrlAlias.Services;
+using Ulr_Alias.Services;
 
-namespace UrlAlias.Extensions;
+namespace Ulr_Alias.Extensions;
 
 public static class ServiceCollectionExtensions
 {
