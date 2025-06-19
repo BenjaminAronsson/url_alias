@@ -1,16 +1,8 @@
 using System;
 using Microsoft.Extensions.Caching.Memory;
+using UrlAlias.Models;
 
-namespace UrlAlias;
-
-public record AliasEntry(string Alias, string Url, DateTimeOffset? ExpiresAt = null);
-public enum AddResult { Added, Exists }
-
-public interface IAliasService
-{
-    string? TryGet(string alias);
-    AddResult Add(AliasEntry entry);
-}
+namespace UrlAlias.Services;
 
 public class AliasService : IAliasService
 {

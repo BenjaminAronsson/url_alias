@@ -1,6 +1,7 @@
 using System;
+using UrlAlias.Models;
 
-namespace UrlAlias;
+namespace UrlAlias.Dtos;
 
 public class AliasEntryDto
 {

@@ -1,8 +1,11 @@
 using System;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using UrlAlias.Dtos;
+using UrlAlias.Models;
+using UrlAlias.Services;
 
-namespace UrlAlias;
+namespace UrlAlias.Extensions;
 
 public static class AliasEndpointExtensions
 {

@@ -1,6 +1,7 @@
 using Microsoft.Extensions.DependencyInjection;
+using UrlAlias.Services;
 
-namespace UrlAlias;
+namespace UrlAlias.Extensions;
 
 public static class ServiceCollectionExtensions
 {

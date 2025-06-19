@@ -1,4 +1,5 @@
-using UrlAlias;
+using Microsoft.AspNetCore.Builder;
+using UrlAlias.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
