@@ -1,0 +1,6 @@
+@Ulr_Alias_HostAddress = http://localhost:5124
+
+GET {{Ulr_Alias_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
