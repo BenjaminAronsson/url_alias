@@ -1,6 +1,6 @@
-@Ulr_Alias_HostAddress = http://localhost:5124
+@Ulr_Alias_HostAddress = http://localhost:32769
 
-GET {{Ulr_Alias_HostAddress}}/weatherforecast/
+POST {{Ulr_Alias_HostAddress}}/api/aliases/
 Accept: application/json
 
 ###
