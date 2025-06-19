@@ -18,13 +18,18 @@ public static class AliasEndpointExtensions
             return url is not null ? Results.Ok(url) : Results.NotFound();
         });
 
-        app.MapPost("/api/aliases", (AliasEntryDto input, IAliasService svc) =>
+        app.MapPost("/api/aliases", (AliasEntryDto input, IAliasService svc, IUrlShortener shortener) =>
         {
             // Validate URL
             if (!UrlValidator.IsValid(input.Url))
                 return Results.BadRequest(new { message = "Invalid URL" });
+
+            // Generate alias if not provided
+            if (string.IsNullOrWhiteSpace(input.Alias))
+                input.Alias = shortener.GenerateAlias(input.Url);
             
             var result = svc.Add(input.ToDomain());
+
             return result == AddResult.Added
                 ? Results.Created($"/api/aliases/{input.Alias}", input)
                 : Results.Conflict(new { message = "Alias already exists" });
