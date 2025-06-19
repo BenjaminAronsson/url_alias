@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace UrlAlias;
 
-public static class AliasEndpoints
+public static class AliasEndpointExtensions
 {
     public static void MapAliasEndpoints(this WebApplication app)
     {

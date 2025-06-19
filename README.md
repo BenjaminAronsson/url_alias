@@ -4,7 +4,7 @@ This project provides a minimal ASP.NET Core backend with an Angular frontend to
 
 ## Backend
 
-The backend exposes a small REST API and stores aliases in `aliases.json` in the project root. Routes are configured in `AliasEndpoints.cs` and operate on an `AliasService` that manages the data file.
+The backend exposes a small REST API and stores aliases in `aliases.json` in the project root. Routes are configured in `AliasEndpointExtensions.cs` and operate on an `AliasService` that manages the data file.
 
 ### Run
 
