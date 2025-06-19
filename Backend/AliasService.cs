@@ -5,7 +5,14 @@ namespace UrlAlias;
 public record AliasEntry(string Alias, string Url, DateTimeOffset? ExpiresAt = null);
 public enum AddResult { Added, Exists }
 
-public class AliasService
+public interface IAliasService
+{
+    IDictionary<string, string> GetAll();
+    string? TryGet(string alias);
+    AddResult Add(AliasEntry entry);
+}
+
+public class AliasService : IAliasService
 {
     private readonly IMemoryCache _cache;
     private readonly object _lock = new();

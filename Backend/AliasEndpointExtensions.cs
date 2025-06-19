@@ -7,15 +7,15 @@ public static class AliasEndpointExtensions
 {
     public static void MapAliasEndpoints(this WebApplication app)
     {
-        app.MapGet("/api/aliases", (AliasService svc) => svc.GetAll());
+        app.MapGet("/api/aliases", (IAliasService svc) => svc.GetAll());
 
-        app.MapGet("/api/aliases/{alias}", (string alias, AliasService svc) =>
+        app.MapGet("/api/aliases/{alias}", (string alias, IAliasService svc) =>
         {
             var url = svc.TryGet(alias);
             return url is not null ? Results.Ok(url) : Results.NotFound();
         });
 
-        app.MapPost("/api/aliases", (AliasEntry input, AliasService svc) =>
+        app.MapPost("/api/aliases", (AliasEntry input, IAliasService svc) =>
         {
             var result = svc.Add(input);
             return result == AddResult.Added
