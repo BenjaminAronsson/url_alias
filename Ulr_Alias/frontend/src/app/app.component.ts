@@ -1,31 +1,10 @@
-import { Component, OnInit } from '@angular/core';
-import { AliasService } from './alias.service';
+import { Component } from '@angular/core';
 
 @Component({
   selector: 'app-root',
-  templateUrl: './app.component.html'
+  templateUrl: './app.component.html',
+  styleUrls: ['./app.component.scss']
 })
-export class AppComponent implements OnInit {
-  alias = '';
-  url = '';
-  aliases: Record<string, string> = {};
-
-  constructor(private service: AliasService) {}
-
-  ngOnInit() {
-    this.refresh();
-  }
-
-  refresh() {
-    this.service.list().subscribe(data => this.aliases = data);
-  }
-
-  add() {
-    if (!this.alias || !this.url) return;
-    this.service.add(this.alias, this.url).subscribe(() => {
-      this.alias = '';
-      this.url = '';
-      this.refresh();
-    });
-  }
+export class AppComponent {
+  title = 'url_alias';
 }
