@@ -1,24 +1,44 @@
-using System.Text.Json;
+using Microsoft.Extensions.Caching.Memory;
 
 namespace UrlAlias;
 
-public record AliasEntry(string Alias, string Url);
+public record AliasEntry(string Alias, string Url, DateTimeOffset? ExpiresAt = null);
 public enum AddResult { Added, Exists }
 
-public class AliasService
+public interface IAliasService
 {
-    private readonly string _dataFile;
+    IDictionary<string, string> GetAll();
+    string? TryGet(string alias);
+    AddResult Add(AliasEntry entry);
+}
+
+public class AliasService : IAliasService
+{
+    private readonly IMemoryCache _cache;
     private readonly object _lock = new();
-    public AliasService(string dataFile)
+    private readonly HashSet<string> _keys = new();
+
+    public AliasService(IMemoryCache cache)
     {
-        _dataFile = dataFile;
+        _cache = cache;
     }
 
     public IDictionary<string, string> GetAll()
     {
         lock (_lock)
         {
-            return Load();
+            var result = new Dictionary<string, string>();
+            var remove = new List<string>();
+            foreach (var key in _keys)
+            {
+                if (_cache.TryGetValue<string>(key, out var url))
+                    result[key] = url!;
+                else
+                    remove.Add(key);
+            }
+            foreach (var r in remove)
+                _keys.Remove(r);
+            return result;
         }
     }
 
@@ -26,8 +46,7 @@ public class AliasService
     {
         lock (_lock)
         {
-            var aliases = Load();
-            return aliases.TryGetValue(alias, out var url) ? url : null;
+            return _cache.TryGetValue<string>(alias, out var url) ? url : null;
         }
     }
 
@@ -35,35 +54,24 @@ public class AliasService
     {
         lock (_lock)
         {
-            var aliases = Load();
-            if (aliases.ContainsKey(entry.Alias))
+            if (_cache.TryGetValue<string>(entry.Alias, out _))
                 return AddResult.Exists;
-            aliases[entry.Alias] = entry.Url;
-            Save(aliases);
+
+            var options = new MemoryCacheEntryOptions
+            {
+                AbsoluteExpiration = entry.ExpiresAt ?? DateTimeOffset.UtcNow.AddHours(12)
+            };
+            options.RegisterPostEvictionCallback((key, value, reason, state) =>
+            {
+                lock (_lock)
+                {
+                    _keys.Remove((string)key);
+                }
+            });
+
+            _cache.Set(entry.Alias, entry.Url, options);
+            _keys.Add(entry.Alias);
             return AddResult.Added;
         }
-    }
-
-    private Dictionary<string, string> Load()
-    {
-        if (File.Exists(_dataFile))
-        {
-            try
-            {
-                var json = File.ReadAllText(_dataFile);
-                return JsonSerializer.Deserialize<Dictionary<string, string>>(json) ?? new();
-            }
-            catch
-            {
-                return new Dictionary<string, string>();
-            }
-        }
-        return new Dictionary<string, string>();
-    }
-
-    private void Save(Dictionary<string, string> aliases)
-    {
-        var json = JsonSerializer.Serialize(aliases, new JsonSerializerOptions { WriteIndented = true });
-        File.WriteAllText(_dataFile, json);
     }
 }
