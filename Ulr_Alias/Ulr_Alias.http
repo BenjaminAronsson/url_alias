@@ -1,0 +1,6 @@
+@Ulr_Alias_HostAddress = http://localhost:32769
+
+POST {{Ulr_Alias_HostAddress}}/api/aliases/
+Accept: application/json
+
+###
