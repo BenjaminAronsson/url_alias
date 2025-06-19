@@ -2,7 +2,7 @@ using UrlAlias;
 
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddSingleton(new AliasService("aliases.json"));
+builder.Services.AddUrlAliasServices();
 
 var app = builder.Build();
 
