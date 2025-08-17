@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNetCore.Http.Extensions;
-using Ulr_Alias.Backend.Services;
-using UrlAlias;
-using UrlAlias.Dtos;
-using UrlAlias.Models;
-using UrlAlias.Services;
+using UlrAlias.Backend.Dtos;
+using UlrAlias.Backend.Models;
+using UlrAlias.Backend.Services;
+using UlrAlias.Backend.Validators;
 
 namespace UlrAlias.Backend.endpoints;
 

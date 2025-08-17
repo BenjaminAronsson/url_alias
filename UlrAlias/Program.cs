@@ -2,7 +2,8 @@ using System.IO.Compression;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.FileProviders;
-using UrlAlias.Extensions;
+using UlrAlias.Backend.endpoints;
+using UlrAlias.Backend.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -36,7 +37,7 @@ app.UseExceptionHandler(exceptionHandlerApp =>
     exceptionHandlerApp.Run(async context =>
         await Results.Problem(extensions: new Dictionary<string, object?>
         {
-            ["traceId"] = context.TraceIdentifier,
+            ["traceId"] = context.TraceIdentifier
         }).ExecuteAsync(context)));
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

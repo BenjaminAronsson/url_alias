@@ -1,8 +1,7 @@
 using Microsoft.Extensions.Caching.Memory;
-using Ulr_Alias.Backend.Services;
-using UrlAlias.Models;
+using UlrAlias.Backend.Models;
 
-namespace UrlAlias.Services;
+namespace UlrAlias.Backend.Services;
 
 public class AliasService : IAliasService
 {

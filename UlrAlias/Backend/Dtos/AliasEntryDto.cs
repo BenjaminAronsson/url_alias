@@ -1,7 +1,7 @@
 using System.ComponentModel;
-using UrlAlias.Models;
+using UlrAlias.Backend.Models;
 
-namespace UrlAlias.Dtos;
+namespace UlrAlias.Backend.Dtos;
 
 public class AliasEntryDto
 {

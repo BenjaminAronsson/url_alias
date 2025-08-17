@@ -1,6 +1,6 @@
-using UrlAlias.Models;
+using UlrAlias.Backend.Models;
 
-namespace Ulr_Alias.Backend.Services;
+namespace UlrAlias.Backend.Services;
 
 public interface IAliasService
 {

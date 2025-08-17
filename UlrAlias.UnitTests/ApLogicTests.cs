@@ -1,12 +1,10 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
-using Ulr_Alias.Backend;
-using Ulr_Alias.Backend.Services;
+using UlrAlias.Backend.Dtos;
 using UlrAlias.Backend.endpoints;
-using UrlAlias.Dtos;
-using UrlAlias.Models;
-using UrlAlias.Services;
+using UlrAlias.Backend.Models;
+using UlrAlias.Backend.Services;
 
 namespace UlrAlias.UnitTests;
 

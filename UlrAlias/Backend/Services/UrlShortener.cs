@@ -1,4 +1,4 @@
-namespace UrlAlias.Services;
+namespace UlrAlias.Backend.Services;
 
 public interface IUrlShortener
 {

@@ -1,4 +1,4 @@
-namespace UrlAlias;
+namespace UlrAlias.Backend.Validators;
 
 public static class UrlValidator
 {

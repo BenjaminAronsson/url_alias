@@ -1,6 +1,6 @@
 using Microsoft.Extensions.Caching.Memory;
-using UrlAlias.Models;
-using UrlAlias.Services;
+using UlrAlias.Backend.Models;
+using UlrAlias.Backend.Services;
 
 namespace UlrAlias.UnitTests;
 

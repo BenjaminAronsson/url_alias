@@ -1,7 +1,6 @@
-using Ulr_Alias.Backend.Services;
-using UrlAlias.Services;
+using UlrAlias.Backend.Services;
 
-namespace UrlAlias.Extensions;
+namespace UlrAlias.Backend.Extensions;
 
 public static class ServiceCollectionExtensions
 {
