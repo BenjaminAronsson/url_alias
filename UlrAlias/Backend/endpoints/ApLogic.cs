@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNetCore.Http.Extensions;
-using UlrAlias.Backend.Dtos;
+using UlrAlias.Backend.DTos;
+using UlrAlias.Backend.Dtos.Responses;
+using UlrAlias.Backend.Extensions;
 using UlrAlias.Backend.Models;
 using UlrAlias.Backend.Services;
 using UlrAlias.Backend.Validators;
@@ -54,16 +56,18 @@ public static class ApLogic
         var uri = UriHelper.BuildAbsolute(
             context.Request.Scheme,
             context.Request.Host,
-            string.Empty,
-            EnsureLeadingSlash(input.Alias));
+            "uri".EnsureLeadingSlash(),
+            input.Alias.EnsureLeadingSlash());
 
+        var response = new AliasCreatedResponse(input, uri)
+        {
+            Url = input.Url
+        };
+        
         return result == AddResult.Added
-            ? Results.Created(uri, input)
+            ? Results.Created(uri, response)
             : Results.Conflict(new { message = "Alias already exists" });
     }
 
-    private static string EnsureLeadingSlash(string? value)
-    {
-        return "/" + (value ?? string.Empty).TrimStart('/');
-    }
+    
 }

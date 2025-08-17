@@ -1,4 +1,4 @@
-using UlrAlias.Backend.Dtos;
+using UlrAlias.Backend.DTos;
 
 namespace UlrAlias.Backend.endpoints;
 

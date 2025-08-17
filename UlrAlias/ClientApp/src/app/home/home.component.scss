@@ -1,0 +1,22 @@
+.url-shortener {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 2rem;
+  align-content: center;
+}
+
+mat-card {
+  margin-top: 1rem;
+  width: 60vw;
+  align-self: center;
+}
+
+mat-card-title {
+  margin-left: 1rem;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 1rem;
+}
