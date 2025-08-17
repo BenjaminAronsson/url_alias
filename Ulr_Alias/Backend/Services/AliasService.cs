@@ -13,10 +13,9 @@ public class AliasService : IAliasService
         _cache = cache;
     }
 
-    public string? TryGet(string alias)
+    public AliasEntry? TryGet(string alias)
     {
-        
-        return _cache.TryGetValue<string>(alias, out var url) ? url : null;
+        return _cache.TryGetValue<AliasEntry>(alias, out var entry) ? entry : null;
     }
 
     public AddResult Add(AliasEntry entry)
@@ -29,7 +28,7 @@ public class AliasService : IAliasService
             AbsoluteExpiration = entry.ExpiresAt ?? DateTimeOffset.UtcNow.AddHours(12)
         };
 
-        _cache.Set(entry.Alias, entry.Url, options);
+        _cache.Set(entry.Alias, entry, options);
         return AddResult.Added;
     }
 }
