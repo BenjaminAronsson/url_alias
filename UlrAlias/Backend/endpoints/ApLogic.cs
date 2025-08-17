@@ -9,11 +9,11 @@ namespace Ulr_Alias.Backend;
 
 public static class ApLogic
 {
-    public static IResult HandleAliasRedirect(string alias, HttpContext context, IAliasService svc)
+    public static async Task<IResult> HandleAliasRedirect(string alias, HttpContext context, IAliasService svc)
     {
         var fallback = UriHelper.BuildAbsolute(context.Request.Scheme, context.Request.Host, context.Request.PathBase, "/swagger/index.html");
         var fallbackReturn = Results.Redirect(fallback, permanent: false, preserveMethod: true);
-        var entry = svc.TryGet(alias);
+        var entry = await svc.TryGetAsync(alias);
 
         if (string.IsNullOrWhiteSpace(entry?.Url)) return fallbackReturn;
         if (!Uri.TryCreate(entry.Url, UriKind.Absolute, out var uri)) return fallbackReturn;
@@ -31,13 +31,13 @@ public static class ApLogic
         return Results.Redirect(uri.ToString(), permanent: true, preserveMethod: true);
     }
     
-    public static IResult GetAlias(string alias, HttpContext context, IAliasService svc)
+    public static async Task<IResult> GetAlias(string alias, HttpContext context, IAliasService svc)
     {
-        var url = svc.TryGet(alias);
+        var url = await svc.TryGetAsync(alias);
         return url is not null ? Results.Ok(url) : Results.NotFound();
     }
     
-    public static IResult PostAlias(AliasEntryRequest input,HttpContext context, IUrlShortener shortener, IAliasService svc)
+    public static async Task<IResult> PostAlias(AliasEntryRequest input,HttpContext context, IUrlShortener shortener, IAliasService svc)
     {
         // Validate URL
         if (!UrlValidator.IsValid(input.Url))
@@ -47,7 +47,7 @@ public static class ApLogic
         if (string.IsNullOrWhiteSpace(input.Alias))
             input.Alias = shortener.GenerateAlias(input.Url);
         
-        var result = svc.Add(input.ToDomain());
+        var result = await svc.AddAsync(input.ToDomain());
         
         var uri = UriHelper.BuildAbsolute(
             context.Request.Scheme,
@@ -59,8 +59,8 @@ public static class ApLogic
             ? Results.Created(uri, input)
             : Results.Conflict(new { message = "Alias already exists" });
     }
-    
-    static string EnsureLeadingSlash(string? value)
+
+    private static string EnsureLeadingSlash(string? value)
     {
         return "/" + (value ?? string.Empty).TrimStart('/');
     }

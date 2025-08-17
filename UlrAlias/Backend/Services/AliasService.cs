@@ -13,15 +13,10 @@ public class AliasService : IAliasService
         _cache = cache;
     }
 
-    public AliasEntry? TryGet(string alias)
+    public Task<AddResult> AddAsync(AliasEntry entry, CancellationToken cancellationToken = default)
     {
-        return _cache.TryGetValue<AliasEntry>(alias, out var entry) ? entry : null;
-    }
-
-    public AddResult Add(AliasEntry entry)
-    {
-        if (_cache.TryGetValue<string>(entry.Alias, out _))
-            return AddResult.Exists;
+        if (_cache.TryGetValue<AliasEntry>(entry.Alias, out _))
+            return Task.FromResult(AddResult.Exists);
 
         var options = new MemoryCacheEntryOptions
         {
@@ -29,6 +24,11 @@ public class AliasService : IAliasService
         };
 
         _cache.Set(entry.Alias, entry, options);
-        return AddResult.Added;
+        return Task.FromResult(AddResult.Exists);
+    }
+
+    public Task<AliasEntry?> TryGetAsync(string alias, CancellationToken cancellationToken = default)
+    {
+        return Task.FromResult(_cache.TryGetValue<AliasEntry>(alias, out var entry) ? entry : null);
     }
 }

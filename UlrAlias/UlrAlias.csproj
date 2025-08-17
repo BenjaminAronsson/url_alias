@@ -6,6 +6,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <UserSecretsId>f5c9120d-fec8-4df0-a155-c3709f220198</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <RootNamespace>Ulr_Alias</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
