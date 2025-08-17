@@ -11,8 +11,9 @@ public static class ApLogic
 {
     public static async Task<IResult> HandleAliasRedirect(string alias, HttpContext context, IAliasService svc)
     {
-        var fallback = UriHelper.BuildAbsolute(context.Request.Scheme, context.Request.Host, context.Request.PathBase, "/swagger/index.html");
-        var fallbackReturn = Results.Redirect(fallback, permanent: false, preserveMethod: true);
+        var fallback = UriHelper.BuildAbsolute(context.Request.Scheme, context.Request.Host, context.Request.PathBase,
+            "/swagger/index.html");
+        var fallbackReturn = Results.Redirect(fallback, false, true);
         var entry = await svc.TryGetAsync(alias);
 
         if (string.IsNullOrWhiteSpace(entry?.Url)) return fallbackReturn;
@@ -22,22 +23,24 @@ public static class ApLogic
 
         //Optional, Forward the query string if the alias target doesn’t already have one
         var incomingQs = context.Request.QueryString.HasValue ? context.Request.QueryString.Value : string.Empty;
-        if (uri.Query.Length != 0 || string.IsNullOrEmpty(incomingQs)) return Results.Redirect(uri.ToString(), permanent: true, preserveMethod: true);
+        if (uri.Query.Length != 0 || string.IsNullOrEmpty(incomingQs))
+            return Results.Redirect(uri.ToString(), true, true);
 
         var builder = new UriBuilder(uri);
         if (!string.IsNullOrEmpty(builder.Query)) builder.Query = incomingQs;
 
         uri = builder.Uri;
-        return Results.Redirect(uri.ToString(), permanent: true, preserveMethod: true);
+        return Results.Redirect(uri.ToString(), true, true);
     }
-    
+
     public static async Task<IResult> GetAlias(string alias, HttpContext context, IAliasService svc)
     {
         var url = await svc.TryGetAsync(alias);
         return url is not null ? Results.Ok(url) : Results.NotFound();
     }
-    
-    public static async Task<IResult> PostAlias(AliasEntryRequest input,HttpContext context, IUrlShortener shortener, IAliasService svc)
+
+    public static async Task<IResult> PostAlias(AliasEntryRequest input, HttpContext context, IUrlShortener shortener,
+        IAliasService svc)
     {
         // Validate URL
         if (!UrlValidator.IsValid(input.Url))
@@ -46,9 +49,9 @@ public static class ApLogic
         // Generate alias if not provided
         if (string.IsNullOrWhiteSpace(input.Alias))
             input.Alias = shortener.GenerateAlias(input.Url);
-        
+
         var result = await svc.AddAsync(input.ToDomain());
-        
+
         var uri = UriHelper.BuildAbsolute(
             context.Request.Scheme,
             context.Request.Host,

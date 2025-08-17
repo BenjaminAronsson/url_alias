@@ -1,3 +1,7 @@
 namespace UrlAlias.Models;
 
-public enum AddResult { Added, Exists }
+public enum AddResult
+{
+    Added,
+    Exists
+}

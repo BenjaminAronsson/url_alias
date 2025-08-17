@@ -1,4 +1,3 @@
-
 namespace UrlAlias.Services;
 
 public interface IUrlShortener
@@ -8,7 +7,7 @@ public interface IUrlShortener
 
 public class UrlShortener : IUrlShortener
 {
-    private static ulong _counter = 0;
+    private static ulong _counter;
     private static readonly object _lock = new();
 
     public string GenerateAlias(string url)
@@ -18,6 +17,7 @@ public class UrlShortener : IUrlShortener
         {
             id = ++_counter;
         }
+
         return Base62Encode(id);
     }
 
@@ -25,12 +25,13 @@ public class UrlShortener : IUrlShortener
     {
         const string chars = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz";
         Span<char> buffer = stackalloc char[11]; // Enough for base62 of ulong
-        int i = buffer.Length;
+        var i = buffer.Length;
         do
         {
             buffer[--i] = chars[(int)(value % 62)];
             value /= 62;
         } while (value > 0);
+
         return new string(buffer[i..]);
     }
 }

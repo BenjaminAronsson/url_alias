@@ -57,7 +57,7 @@ app.UseStaticFiles(new StaticFileOptions
     OnPrepareResponse = ctx =>
     {
         var path = ctx.File.PhysicalPath ?? string.Empty;
-        if (Path.GetFileName(path).Equals("index.html", System.StringComparison.OrdinalIgnoreCase))
+        if (Path.GetFileName(path).Equals("index.html", StringComparison.OrdinalIgnoreCase))
         {
             ctx.Context.Response.Headers.CacheControl = "no-cache, no-store, must-revalidate";
             ctx.Context.Response.Headers.Pragma = "no-cache";
@@ -86,6 +86,7 @@ app.MapFallback(async context =>
             return;
         }
     }
+
     context.Response.StatusCode = StatusCodes.Status404NotFound;
 });
 

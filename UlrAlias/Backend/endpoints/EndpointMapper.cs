@@ -9,7 +9,7 @@ public static class EndpointMapper
         var group = app.MapGroup("api");
 
         app.MapGet("uri/{alias}", ApLogic.HandleAliasRedirect);
-        
+
         group.MapGet("/aliases/{alias}", ApLogic.GetAlias)
             .WithOpenApi();
 

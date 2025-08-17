@@ -22,8 +22,8 @@ public class ApLogicTests
         var result = await ApLogic.HandleAliasRedirect(alias, context, mockService.Object);
 
         Assert.IsType<RedirectHttpResult>(result);
-        
-        if(result is RedirectHttpResult redirect) 
+
+        if (result is RedirectHttpResult redirect)
             Assert.Contains("/swagger/index.html", redirect.Url);
     }
 
@@ -48,7 +48,8 @@ public class ApLogicTests
         var context = new DefaultHttpContext();
         var mockShortener = new Mock<IUrlShortener>();
         var mockService = new Mock<IAliasService>();
-        mockService.Setup(s => s.AddAsync(It.IsAny<AliasEntry>(), It.IsAny<CancellationToken>())).ReturnsAsync(AddResult.Added);
+        mockService.Setup(s => s.AddAsync(It.IsAny<AliasEntry>(), It.IsAny<CancellationToken>()))
+            .ReturnsAsync(AddResult.Added);
 
         var result = await ApLogic.PostAlias(input, context, mockShortener.Object, mockService.Object);
 

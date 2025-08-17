@@ -24,7 +24,7 @@ public class AliasService : IAliasService
         };
 
         _cache.Set(entry.Alias, entry, options);
-        return Task.FromResult(AddResult.Exists);
+        return Task.FromResult(AddResult.Added);
     }
 
     public Task<AliasEntry?> TryGetAsync(string alias, CancellationToken cancellationToken = default)

@@ -22,7 +22,7 @@ public class AliasServiceTests
     {
         var cache = new MemoryCache(new MemoryCacheOptions());
         var service = new AliasService(cache);
-        var entry = new AliasEntry("test","https://example.com", null);
+        var entry = new AliasEntry("test", "https://example.com", null);
 
         var result = await service.AddAsync(entry);
 
@@ -34,7 +34,7 @@ public class AliasServiceTests
     {
         var cache = new MemoryCache(new MemoryCacheOptions());
         var service = new AliasService(cache);
-        var entry = new AliasEntry("test","https://example.com", null);
+        var entry = new AliasEntry("test", "https://example.com", null);
         await service.AddAsync(entry);
 
         var result = await service.AddAsync(entry);
