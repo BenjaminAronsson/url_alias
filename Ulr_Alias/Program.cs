@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.HttpOverrides;
 using UrlAlias.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -9,6 +10,11 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddUrlAliasServices();
 
+builder.Services.Configure<ForwardedHeadersOptions>(o =>
+{
+    o.ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedFor;
+});
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -18,8 +24,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
 app.MapAliasEndpoints();
 
-app.Run();
+await app.RunAsync();

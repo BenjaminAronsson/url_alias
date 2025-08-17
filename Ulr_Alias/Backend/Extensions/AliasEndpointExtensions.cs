@@ -1,3 +1,5 @@
+using Microsoft.AspNetCore.Http.Extensions;
+using Ulr_Alias.Backend.Services;
 using UrlAlias.Dtos;
 using UrlAlias.Models;
 using UrlAlias.Services;
@@ -11,22 +13,41 @@ public static class AliasEndpointExtensions
 
         app.MapGet("/{alias}", (string alias, HttpContext context, IAliasService svc) =>
         {
-            var fallback =  "https://" + context.Request.Host.ToString() + "/swagger/index.html";
-            var aliases = svc.TryGet(alias);
+            var fallback = UriHelper.BuildAbsolute(
+                context.Request.Scheme,
+                context.Request.Host,
+                context.Request.PathBase,
+                "/swagger/index.html");
+            var fallbackReturn = Results.Redirect(fallback, permanent: false, preserveMethod: true);
+            var url = svc.TryGet(alias);
             
-            return aliases is not null
-                ? Results.Redirect(aliases)
-                : Results.Redirect(fallback);
+            if (string.IsNullOrWhiteSpace(url)) return fallbackReturn;
+            if (!Uri.TryCreate(url, UriKind.Absolute, out var uri)) return fallbackReturn;
+
+            if (uri.Scheme != Uri.UriSchemeHttps && uri.Scheme != Uri.UriSchemeHttp) return fallbackReturn;
+            
+            // (Optional) Forward the caller’s query string if the alias target doesn’t already have one
+            var incomingQs = context.Request.QueryString.HasValue ? context.Request.QueryString.Value : string.Empty;
+            if (string.IsNullOrEmpty(incomingQs))
+                return Results.Redirect(uri.ToString(), permanent: true, preserveMethod: true);
+            
+            var builder = new UriBuilder(uri);
+            if (!string.IsNullOrEmpty(builder.Query)) //this could be optional
+                builder.Query = builder.Query.TrimStart('?') + "&" + incomingQs.TrimStart('?');
+            
+            uri = builder.Uri;
+            return Results.Redirect(uri.ToString(), permanent: true, preserveMethod: true);
         });
 
         app.MapGet("/api/aliases/{alias}", (string alias, IAliasService svc) =>
         {
             var url = svc.TryGet(alias);
+            
             return url is not null ? Results.Ok(url) : Results.NotFound();
         })
         .WithOpenApi();
 
-        app.MapPost("/api/aliases", (AliasEntryDto input, HttpContext context, IAliasService svc, IUrlShortener shortener) =>
+        app.MapPost("/api/aliases", (AliasEntryRequest input, HttpContext context, IAliasService svc, IUrlShortener shortener) =>
         {
             // Validate URL
             if (!UrlValidator.IsValid(input.Url))

@@ -1,5 +1,3 @@
-using System;
-
 namespace UrlAlias;
 
 public static class UrlValidator
