@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using Ulr_Alias.Backend;
 using Ulr_Alias.Backend.Services;
+using UlrAlias.Backend.endpoints;
 using UrlAlias.Dtos;
 using UrlAlias.Models;
 using UrlAlias.Services;
@@ -44,7 +45,7 @@ public class ApLogicTests
     [Fact]
     public async Task PostAlias_ReturnsCreated_WhenAliasAdded()
     {
-        var input = new AliasEntryRequest { Url = "https://example.com", Alias = "test" };
+        var input = new AliasEntryDto { Url = "https://example.com", Alias = "test" };
         var context = new DefaultHttpContext();
         var mockShortener = new Mock<IUrlShortener>();
         var mockService = new Mock<IAliasService>();
@@ -53,6 +54,6 @@ public class ApLogicTests
 
         var result = await ApLogic.PostAlias(input, context, mockShortener.Object, mockService.Object);
 
-        Assert.IsType<Created<AliasEntryRequest>>(result);
+        Assert.IsType<Created<AliasEntryDto>>(result);
     }
 }

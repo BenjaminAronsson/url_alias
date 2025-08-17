@@ -3,7 +3,7 @@ using UrlAlias.Models;
 
 namespace UrlAlias.Dtos;
 
-public class AliasEntryRequest
+public class AliasEntryDto
 {
     [DefaultValue("demo")] public string? Alias { get; set; }
 

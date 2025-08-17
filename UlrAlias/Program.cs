@@ -27,11 +27,17 @@ builder.Services.AddResponseCompression(o =>
 builder.Services.Configure<BrotliCompressionProviderOptions>(o => o.Level = CompressionLevel.Fastest);
 builder.Services.Configure<GzipCompressionProviderOptions>(o => o.Level = CompressionLevel.Fastest);
 
-
 var app = builder.Build();
 
 app.UseResponseCompression();
 
+//Uses global exception handler for unhandled exceptions
+app.UseExceptionHandler(exceptionHandlerApp =>
+    exceptionHandlerApp.Run(async context =>
+        await Results.Problem(extensions: new Dictionary<string, object?>
+        {
+            ["traceId"] = context.TraceIdentifier,
+        }).ExecuteAsync(context)));
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {

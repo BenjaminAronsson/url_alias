@@ -5,7 +5,7 @@ using UrlAlias.Dtos;
 using UrlAlias.Models;
 using UrlAlias.Services;
 
-namespace Ulr_Alias.Backend;
+namespace UlrAlias.Backend.endpoints;
 
 public static class ApLogic
 {
@@ -39,7 +39,7 @@ public static class ApLogic
         return url is not null ? Results.Ok(url) : Results.NotFound();
     }
 
-    public static async Task<IResult> PostAlias(AliasEntryRequest input, HttpContext context, IUrlShortener shortener,
+    public static async Task<IResult> PostAlias(AliasEntryDto input, HttpContext context, IUrlShortener shortener,
         IAliasService svc)
     {
         // Validate URL
