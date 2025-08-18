@@ -35,7 +35,7 @@ public class AliasServiceTests
     {
         var dbContext = CreateInMemoryDbContext();
         var service = new AliasService(dbContext);
-        var entry = new AliasEntry("test", "https://example.com", null);
+        var entry = new AliasEntry { Alias = "test", Url = "https://example.com", UserId = "user1" };
 
         var result = await service.AddAsync(entry);
 
@@ -47,11 +47,65 @@ public class AliasServiceTests
     {
         var dbContext = CreateInMemoryDbContext();
         var service = new AliasService(dbContext);
-        var entry = new AliasEntry("test", "https://example.com", null);
+        var entry = new AliasEntry { Alias = "test", Url = "https://example.com", UserId = "user1" };
         await service.AddAsync(entry);
 
         var result = await service.AddAsync(entry);
 
         Assert.Equal(AddResult.Exists, result);
+    }
+
+    [Fact]
+    public async Task Add_AllowsDuplicate_WhenExistingAliasExpired()
+    {
+        var dbContext = CreateInMemoryDbContext();
+        var service = new AliasService(dbContext);
+        var expired = new AliasEntry
+        {
+            Alias = "test",
+            Url = "https://example.com",
+            UserId = "user1",
+            ExpiresAt = DateTime.UtcNow.AddDays(-1)
+        };
+        await service.AddAsync(expired);
+
+        var entry = new AliasEntry { Alias = "test", Url = "https://example.com/new", UserId = "user2" };
+
+        var result = await service.AddAsync(entry);
+
+        Assert.Equal(AddResult.Added, result);
+    }
+
+    [Fact]
+    public async Task TryGet_IncrementsUsageCount()
+    {
+        var dbContext = CreateInMemoryDbContext();
+        var service = new AliasService(dbContext);
+        var entry = new AliasEntry { Alias = "test", Url = "https://example.com", UserId = "user1" };
+        await service.AddAsync(entry);
+
+        await service.TryGetAsync("test");
+        var result = await service.TryGetAsync("test");
+
+        Assert.Equal(2, result?.UsageCount);
+    }
+
+    [Fact]
+    public async Task TryGet_ReturnsNull_WhenAliasExpired()
+    {
+        var dbContext = CreateInMemoryDbContext();
+        var service = new AliasService(dbContext);
+        var expired = new AliasEntry
+        {
+            Alias = "test",
+            Url = "https://example.com",
+            UserId = "user1",
+            ExpiresAt = DateTime.UtcNow.AddDays(-1)
+        };
+        await service.AddAsync(expired);
+
+        var result = await service.TryGetAsync("test");
+
+        Assert.Null(result);
     }
 }

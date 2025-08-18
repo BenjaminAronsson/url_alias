@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using UlrAlias.Backend.Data;
 
@@ -10,9 +11,11 @@ using UlrAlias.Backend.Data;
 namespace UlrAlias.Migrations
 {
     [DbContext(typeof(AliasDbContext))]
-    partial class AliasDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250818114823_AddUserAndAnalytics")]
+    partial class AddUserAndAnalytics
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.19");
@@ -27,7 +30,7 @@ namespace UlrAlias.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime?>("ExpiresAt")
+                    b.Property<DateTimeOffset?>("ExpiresAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Url")
@@ -43,7 +46,8 @@ namespace UlrAlias.Migrations
 
                     b.HasKey("Id");
 
-                    b.HasIndex("Alias");
+                    b.HasIndex("Alias")
+                        .IsUnique();
 
                     b.ToTable("AliasEntries");
                 });

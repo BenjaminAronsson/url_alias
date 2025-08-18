@@ -13,9 +13,13 @@ public class AliasDbContext : DbContext
     {
         modelBuilder.Entity<AliasEntry>(entity =>
         {
-            entity.HasKey(e => e.Alias);
+            entity.HasKey(e => e.Id);
+            entity.HasIndex(e => e.Alias);
+            entity.Property(e => e.Alias).IsRequired();
             entity.Property(e => e.Url).IsRequired();
+            entity.Property(e => e.UserId).IsRequired();
             entity.Property(e => e.ExpiresAt);
+            entity.Property(e => e.UsageCount);
         });
     }
 }
