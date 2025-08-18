@@ -1,7 +1,10 @@
+using System.IO.Compression;
+using Microsoft.AspNetCore.HttpOverrides;
+using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.FileProviders;
 using UlrAlias.Web.Endpoints;
-using UlrAlias.Web.Extensions;
 using Microsoft.EntityFrameworkCore;
+using UlrAlias.Infrastructure;
 using UlrAlias.Infrastructure.Data;
 using UlrAlias.Domain.Models;
 
@@ -12,7 +15,21 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddUrlAliasServices(builder.Configuration);
+builder.Services.AddInfrastructure(builder.Configuration);
+
+builder.Services.Configure<ForwardedHeadersOptions>(o =>
+{
+    o.ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedFor;
+});
+
+builder.Services.AddResponseCompression(o =>
+{
+    o.EnableForHttps = true;
+    o.Providers.Add<BrotliCompressionProvider>();
+    o.Providers.Add<GzipCompressionProvider>();
+});
+builder.Services.Configure<BrotliCompressionProviderOptions>(o => o.Level = CompressionLevel.Fastest);
+builder.Services.Configure<GzipCompressionProviderOptions>(o => o.Level = CompressionLevel.Fastest);
 
 var app = builder.Build();
 
