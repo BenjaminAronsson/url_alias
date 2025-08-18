@@ -18,7 +18,7 @@ public class ApLogicTests
         var mockService = new Mock<IAliasService>();
         mockService.Setup(s => s.TryGetAsync(alias, It.IsAny<CancellationToken>())).ReturnsAsync((AliasEntry?)null);
 
-        var result = await ApLogic.HandleAliasRedirect(alias, context, mockService.Object);
+        var result = await ApLogic.HandleAliasRedirect(alias, context, mockService.Object, default);
 
         Assert.IsType<RedirectHttpResult>(result);
 
@@ -35,7 +35,7 @@ public class ApLogicTests
         var aliasEntry = new AliasEntry(alias, "https://example.com", null);
         mockService.Setup(s => s.TryGetAsync(alias, It.IsAny<CancellationToken>())).ReturnsAsync(aliasEntry);
 
-        var result = await ApLogic.GetAlias(alias, context, mockService.Object);
+        var result = await ApLogic.GetAlias(alias, context, mockService.Object, default);
 
         Assert.IsType<Ok<AliasEntry>>(result);
     }
@@ -50,7 +50,7 @@ public class ApLogicTests
         mockService.Setup(s => s.AddAsync(It.IsAny<AliasEntry>(), It.IsAny<CancellationToken>()))
             .ReturnsAsync(AddResult.Added);
 
-        var result = await ApLogic.PostAlias(input, context, mockShortener.Object, mockService.Object);
+        var result = await ApLogic.PostAlias(input, context, mockShortener.Object, mockService.Object, default);
 
         Assert.IsType<Created<AliasEntryDto>>(result);
     }
