@@ -117,11 +117,12 @@ async Task SetupDb(WebApplication webApplication)
 
     if (!await dbContext.AliasEntries.AnyAsync())
     {
-        var entries = Enumerable.Range(1, 1000).Select(i => new AliasEntry(
-            $"alias{i}",
-            $"https://google.com/?q={i}",
-            DateTimeOffset.UtcNow.AddDays(2 + i)
-        ));
+        var entries = Enumerable.Range(1, 1000).Select(i => new AliasEntry
+        {
+            Alias = $"alias{i}",
+            Url = $"https://google.com/?q={i}",
+            ExpiresAt = DateTime.UtcNow.AddDays(2 + i)
+        });
         dbContext.AliasEntries.AddRange(entries);
         await dbContext.SaveChangesAsync();
     }

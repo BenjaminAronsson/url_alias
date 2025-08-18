@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
+using System.Linq;
 using UlrAlias.Application.Dtos;
 using UlrAlias.Application.Dtos.Responses;
 using UlrAlias.Web.Endpoints;
@@ -33,7 +34,7 @@ public class ApLogicTests
         const string alias = "existing";
         var context = new DefaultHttpContext();
         var mockService = new Mock<IAliasService>();
-        var aliasEntry = new AliasEntry(alias, "https://example.com", null);
+        var aliasEntry = new AliasEntry { Alias = alias, Url = "https://example.com" };
         mockService.Setup(s => s.TryGetAsync(alias, It.IsAny<CancellationToken>())).ReturnsAsync(aliasEntry);
 
         var result = await ApLogic.GetAlias(alias, context, mockService.Object, default);

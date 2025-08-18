@@ -9,17 +9,17 @@ EXPOSE 8081
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
-COPY ["Ulr_Alias/Ulr_Alias.csproj", "Ulr_Alias/"]
-RUN dotnet restore "./Ulr_Alias/Ulr_Alias.csproj"
+COPY ["UlrAlias/UlrAlias.csproj", "UlrAlias/"]
+RUN dotnet restore "./UlrAlias/UlrAlias.csproj"
 COPY . .
-WORKDIR "/src/Ulr_Alias"
-RUN dotnet build "./Ulr_Alias.csproj" -c $BUILD_CONFIGURATION -o /app/build
+WORKDIR "/src/UlrAlias"
+RUN dotnet build "./UlrAlias.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
 ARG BUILD_CONFIGURATION=Release
-RUN dotnet publish "./Ulr_Alias.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+RUN dotnet publish "./UlrAlias.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
 COPY --from=publish /app/publish .
-ENTRYPOINT ["dotnet", "Ulr_Alias.dll"]
+ENTRYPOINT ["dotnet", "UlrAlias.dll"]

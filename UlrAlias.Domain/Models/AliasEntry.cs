@@ -1,3 +1,9 @@
 namespace UlrAlias.Domain.Models;
 
-public record AliasEntry(string Alias, string Url, DateTimeOffset? ExpiresAt);
+public class AliasEntry
+{
+    public int Id { get; set; }
+    public string Alias { get; set; } = string.Empty;
+    public string Url { get; set; } = string.Empty;
+    public DateTime? ExpiresAt { get; set; }
+}
