@@ -12,12 +12,12 @@ namespace UlrAlias.Backend.endpoints;
 
 public static class ApLogic
 {
-    public static async Task<IResult> HandleAliasRedirect(string alias, HttpContext context, IAliasService svc)
+    public static async Task<IResult> HandleAliasRedirect(string alias, HttpContext context, IAliasService svc, CancellationToken cancellationToken)
     {
         var fallback = UriHelper.BuildAbsolute(context.Request.Scheme, context.Request.Host, context.Request.PathBase,
             "/swagger/index.html");
         var fallbackReturn = Results.Redirect(fallback, false, true);
-        var entry = await svc.TryGetAsync(alias);
+        var entry = await svc.TryGetAsync(alias, cancellationToken);
 
         if (string.IsNullOrWhiteSpace(entry?.Url)) return fallbackReturn;
         if (!Uri.TryCreate(entry.Url, UriKind.Absolute, out var uri)) return fallbackReturn;
@@ -36,14 +36,14 @@ public static class ApLogic
         return Results.Redirect(uri.ToString(), true, true);
     }
 
-    public static async Task<IResult> GetAlias(string alias, HttpContext context, IAliasService svc)
+    public static async Task<IResult> GetAlias(string alias, HttpContext context, IAliasService svc, CancellationToken cancellationToken)
     {
-        var url = await svc.TryGetAsync(alias);
+        var url = await svc.TryGetAsync(alias, cancellationToken);
         return url is not null ? Results.Ok(url) : Results.NotFound();
     }
 
     public static async Task<IResult> PostAlias(AliasEntryDto input, HttpContext context, IUrlShortener shortener,
-        IAliasService svc)
+        IAliasService svc, CancellationToken cancellationToken)
     {
         // Validate URL
         if (!UrlValidator.IsValid(input.Url))
@@ -53,7 +53,7 @@ public static class ApLogic
         if (string.IsNullOrWhiteSpace(input.Alias))
             input.Alias = shortener.GenerateAlias(input.Url);
 
-        var result = await svc.AddAsync(input.ToDomain());
+        var result = await svc.AddAsync(input.ToDomain(), cancellationToken);
 
         var uri = UriHelper.BuildAbsolute(
             context.Request.Scheme,
@@ -72,41 +72,46 @@ public static class ApLogic
     }
 
 
-    public static Task<IResult> GetAllAliases([FromQuery(Name = "page")] int page, [FromQuery(Name = "pageSize")] int pageSize, HttpContext context, IAliasService svc)
+    public static async Task<IResult> GetAllAliases([FromQuery(Name = "page")] int page, [FromQuery(Name = "pageSize")] int pageSize,
+        IAliasService svc, HttpContext context, CancellationToken cancellationToken)
     {
-        if(page < 1 || pageSize < 0 || pageSize > 100) Task.FromResult(Results.BadRequest("Invalid page"));
-        const int numberOfAliases = 110;
+        if(page < 1 || pageSize < 0 || pageSize > 100) Results.BadRequest("Invalid page");
+        
+        var numberOfAliasesTask = svc.CountAsync( cancellationToken);
+        var aliasesTask = svc.FindAsync(page - 1, pageSize, cancellationToken);
+        
+        Task.WaitAll(aliasesTask, numberOfAliasesTask);
+        
+        var numberOfAliases = await numberOfAliasesTask;
+        var aliases = await aliasesTask;
         
         var response = new GetAliasesResponse
         {
-            Aliases = [],
+            Aliases = aliases.Select(a => new AliasCreatedResponse(
+                    new AliasEntryDto
+                    {
+                        Alias = a.Alias,
+                        Url = a.Url,
+                        ExpiresAt = a.ExpiresAt
+                    },
+                    UriHelper.BuildAbsolute(
+                        context.Request.Scheme,
+                        context.Request.Host,
+                        "uri".EnsureLeadingSlash(),
+                        a.Alias.EnsureLeadingSlash())
+                )
+                {
+                    Url = UriHelper.BuildAbsolute(
+                        context.Request.Scheme,
+                        context.Request.Host,
+                        "uri".EnsureLeadingSlash(),
+                        a.Alias.EnsureLeadingSlash())
+                })
+                .ToList(),
             TotalAliases = numberOfAliases,
-            TotalPages = numberOfAliases % pageSize
+            TotalPages = (int)Math.Ceiling((double)numberOfAliases / pageSize),
         };
         
-        var startIndex = (page - 1) * pageSize;
-        
-        for (var i = 0; i < numberOfAliases; i++)
-        {
-            if(startIndex > i) continue;
-            if(response.Aliases.Count >= pageSize) break;
-            
-           var dummyAlias = new AliasEntryDto
-            {
-                Alias = i.ToString(CultureInfo.InvariantCulture),
-                Url = "https://google.com",
-                ExpiresAt = DateTimeOffset.UtcNow.AddDays(30)
-            };
-           
-           var alias = new AliasCreatedResponse(dummyAlias, 
-               UriHelper.BuildAbsolute(context.Request.Scheme, context.Request.Host, "uri".EnsureLeadingSlash(), dummyAlias.Alias.EnsureLeadingSlash()))
-           {
-               Url = dummyAlias.Url
-           };
-           
-           response.Aliases.Add(alias);
-        }
-        
-        return Task.FromResult(Results.Ok(response));
+        return Results.Ok(response);
     }
 }

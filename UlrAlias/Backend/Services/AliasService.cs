@@ -1,33 +1,48 @@
-using Microsoft.Extensions.Caching.Memory;
 using UlrAlias.Backend.Models;
+using Microsoft.EntityFrameworkCore;
+using UlrAlias.Backend.Data;
 
 namespace UlrAlias.Backend.Services;
 
 public class AliasService : IAliasService
 {
-    private readonly IMemoryCache _cache; //TODO: change to distributed cache or db
+    private readonly AliasDbContext _dbContext;
 
-    public AliasService(IMemoryCache cache)
+    public AliasService(AliasDbContext dbContext)
     {
-        _cache = cache;
+        _dbContext = dbContext;
     }
 
-    public Task<AddResult> AddAsync(AliasEntry entry, CancellationToken cancellationToken = default)
+    public async Task<AddResult> AddAsync(AliasEntry entry, CancellationToken cancellationToken = default)
     {
-        if (_cache.TryGetValue<AliasEntry>(entry.Alias, out _))
-            return Task.FromResult(AddResult.Exists);
+        if (await _dbContext.AliasEntries.AnyAsync(e => e.Alias == entry.Alias, cancellationToken))
+            return AddResult.Exists;
 
-        var options = new MemoryCacheEntryOptions
-        {
-            AbsoluteExpiration = entry.ExpiresAt ?? DateTimeOffset.UtcNow.AddHours(12)
-        };
-
-        _cache.Set(entry.Alias, entry, options);
-        return Task.FromResult(AddResult.Added);
+        await _dbContext.AliasEntries.AddAsync(entry, cancellationToken);
+        await _dbContext.SaveChangesAsync(cancellationToken);
+        return AddResult.Added;
     }
 
-    public Task<AliasEntry?> TryGetAsync(string alias, CancellationToken cancellationToken = default)
+    public async Task<AliasEntry?> TryGetAsync(string alias, CancellationToken cancellationToken = default)
     {
-        return Task.FromResult(_cache.TryGetValue<AliasEntry>(alias, out var entry) ? entry : null);
+        return await _dbContext.AliasEntries.FirstOrDefaultAsync(e => e.Alias == alias, cancellationToken);
+    }
+
+    public async Task<IEnumerable<AliasEntry>> FindAsync(int pageIndex, int pageSize, CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.AliasEntries
+            .AsNoTracking()
+            .OrderByDescending(e => e.Alias)
+            .Skip(pageIndex * pageSize)
+            .Take(pageSize)
+            .ToListAsync(cancellationToken)
+            .ContinueWith(task => task.Result.AsEnumerable(), cancellationToken);
+    }
+
+    public async Task<int> CountAsync(CancellationToken cancellationToken = default)
+    {
+        return await _dbContext.AliasEntries
+            .AsNoTracking()
+            .CountAsync(cancellationToken);
     }
 }
