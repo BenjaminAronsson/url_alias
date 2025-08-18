@@ -5,6 +5,7 @@ using UlrAlias.Backend.DTos;
 using UlrAlias.Backend.endpoints;
 using UlrAlias.Backend.Models;
 using UlrAlias.Backend.Services;
+using UlrAlias.Backend.Dtos.Responses;
 
 namespace UlrAlias.UnitTests;
 
@@ -32,7 +33,7 @@ public class ApLogicTests
         const string alias = "existing";
         var context = new DefaultHttpContext();
         var mockService = new Mock<IAliasService>();
-        var aliasEntry = new AliasEntry(alias, "https://example.com", null);
+        var aliasEntry = new AliasEntry { Alias = alias, Url = "https://example.com" };
         mockService.Setup(s => s.TryGetAsync(alias, It.IsAny<CancellationToken>())).ReturnsAsync(aliasEntry);
 
         var result = await ApLogic.GetAlias(alias, context, mockService.Object, default);
@@ -52,6 +53,6 @@ public class ApLogicTests
 
         var result = await ApLogic.PostAlias(input, context, mockShortener.Object, mockService.Object, default);
 
-        Assert.IsType<Created<AliasEntryDto>>(result);
+        Assert.IsType<Created<AliasCreatedResponse>>(result);
     }
 }
