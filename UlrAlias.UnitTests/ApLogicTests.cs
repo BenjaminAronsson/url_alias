@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
 using UlrAlias.Backend.DTos;
+using UlrAlias.Backend.Dtos.Responses;
 using UlrAlias.Backend.endpoints;
 using UlrAlias.Backend.Models;
 using UlrAlias.Backend.Services;
@@ -52,6 +53,6 @@ public class ApLogicTests
 
         var result = await ApLogic.PostAlias(input, context, mockShortener.Object, mockService.Object, default);
 
-        Assert.IsType<Created<AliasEntryDto>>(result);
+        Assert.IsType<Created<AliasCreatedResponse>>(result);
     }
 }
