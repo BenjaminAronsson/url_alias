@@ -1,4 +1,4 @@
-using UlrAlias.Backend.Services;
+using UlrAlias.Infrastructure.Services;
 
 namespace UlrAlias.UnitTests;
 

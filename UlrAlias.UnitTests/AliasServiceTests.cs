@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using UlrAlias.Backend.Models;
-using UlrAlias.Backend.Services;
-using UlrAlias.Backend.Data;
+using UlrAlias.Domain.Models;
+using UlrAlias.Infrastructure.Services;
+using UlrAlias.Infrastructure.Data;
 
 namespace UlrAlias.UnitTests;
 

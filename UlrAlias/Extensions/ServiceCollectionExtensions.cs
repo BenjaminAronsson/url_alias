@@ -2,10 +2,13 @@ using System.IO.Compression;
 using Microsoft.AspNetCore.HttpOverrides;
 using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.EntityFrameworkCore;
-using UlrAlias.Backend.Data;
-using UlrAlias.Backend.Services;
+using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.DependencyInjection;
+using UlrAlias.Application.Services;
+using UlrAlias.Infrastructure.Data;
+using UlrAlias.Infrastructure.Services;
 
-namespace UlrAlias.Backend.Extensions;
+namespace UlrAlias.Web.Extensions;
 
 public static class ServiceCollectionExtensions
 {

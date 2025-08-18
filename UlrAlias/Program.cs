@@ -1,12 +1,9 @@
-using System.IO.Compression;
-using Microsoft.AspNetCore.HttpOverrides;
-using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.FileProviders;
-using UlrAlias.Backend.endpoints;
-using UlrAlias.Backend.Extensions;
+using UlrAlias.Web.Endpoints;
+using UlrAlias.Web.Extensions;
 using Microsoft.EntityFrameworkCore;
-using UlrAlias.Backend.Data;
-using UlrAlias.Backend.Models;
+using UlrAlias.Infrastructure.Data;
+using UlrAlias.Domain.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 

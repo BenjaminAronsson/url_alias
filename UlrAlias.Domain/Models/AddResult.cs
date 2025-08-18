@@ -1,4 +1,4 @@
-namespace UlrAlias.Backend.Models;
+namespace UlrAlias.Domain.Models;
 
 public enum AddResult
 {

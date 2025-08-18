@@ -1,8 +1,9 @@
-using UlrAlias.Backend.Models;
 using Microsoft.EntityFrameworkCore;
-using UlrAlias.Backend.Data;
+using UlrAlias.Application.Services;
+using UlrAlias.Domain.Models;
+using UlrAlias.Infrastructure.Data;
 
-namespace UlrAlias.Backend.Services;
+namespace UlrAlias.Infrastructure.Services;
 
 public class AliasService : IAliasService
 {

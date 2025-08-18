@@ -1,9 +1,6 @@
-namespace UlrAlias.Backend.Services;
+using UlrAlias.Application.Services;
 
-public interface IUrlShortener
-{
-    string GenerateAlias(string url);
-}
+namespace UlrAlias.Infrastructure.Services;
 
 public class UrlShortener : IUrlShortener
 {

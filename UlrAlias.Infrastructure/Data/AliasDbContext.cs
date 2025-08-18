@@ -1,7 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using UlrAlias.Backend.Models;
+using UlrAlias.Domain.Models;
 
-namespace UlrAlias.Backend.Data;
+namespace UlrAlias.Infrastructure.Data;
 
 public class AliasDbContext : DbContext
 {

@@ -1,4 +1,4 @@
-using UlrAlias.Backend.Validators;
+using UlrAlias.Application.Validators;
 
 namespace UlrAlias.UnitTests;
 

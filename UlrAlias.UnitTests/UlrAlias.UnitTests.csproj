@@ -15,10 +15,12 @@
         <PackageReference Include="xunit.runner.visualstudio" Version="2.8.2"/>
     </ItemGroup>
 
+
     <ItemGroup>
         <ProjectReference Include="..\UlrAlias\UlrAlias.csproj"/>
+        <ProjectReference Include="..\UlrAlias.Application\UlrAlias.Application.csproj" />
+        <ProjectReference Include="..\UlrAlias.Infrastructure\UlrAlias.Infrastructure.csproj" />
     </ItemGroup>
-
     <ItemGroup>
         <Using Include="Xunit"/>
     </ItemGroup>
