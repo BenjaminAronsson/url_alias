@@ -7,7 +7,7 @@ export type ThemeName = 'theme-light' | 'theme-dark';
 
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
-  private _current: ThemeName = 'theme-light';
+  private _current: ThemeName = 'theme-dark';
   get current() { return this._current; }
 
   constructor(

@@ -21,6 +21,8 @@ import {SwaggerComponent} from './swagger/swagger.component';
 
 import {UrlShortenerService} from './services/url-shortener.service';
 import {ThemeService} from "./services/theme.service";
+import {MatPaginatorModule} from "@angular/material/paginator";
+import {MatTableModule} from "@angular/material/table";
 
 @NgModule({
   declarations: [
@@ -42,7 +44,9 @@ import {ThemeService} from "./services/theme.service";
     MatDatepickerModule,
     MatNativeDateModule,
     MatSlideToggleModule,
-    HttpClientModule
+    HttpClientModule,
+    MatPaginatorModule,
+    MatTableModule
   ],
   providers: [
     UrlShortenerService,

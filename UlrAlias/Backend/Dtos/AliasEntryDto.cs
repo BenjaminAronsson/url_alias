@@ -12,7 +12,7 @@ public class AliasEntryDto
     public required string Url { get; init; }
 
     [DefaultValue("2025-12-31T23:59:59Z")] // Fixed future date for Swagger default
-    public DateTimeOffset? ExpiresAt { get; protected init; }
+    public DateTimeOffset? ExpiresAt { get; init; }
 
     public AliasEntry ToDomain()
     {

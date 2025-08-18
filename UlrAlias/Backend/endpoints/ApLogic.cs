@@ -1,4 +1,6 @@
-﻿using Microsoft.AspNetCore.Http.Extensions;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Mvc;
 using UlrAlias.Backend.DTos;
 using UlrAlias.Backend.Dtos.Responses;
 using UlrAlias.Backend.Extensions;
@@ -69,5 +71,42 @@ public static class ApLogic
             : Results.Conflict(new { message = "Alias already exists" });
     }
 
-    
+
+    public static Task<IResult> GetAllAliases([FromQuery(Name = "page")] int page, [FromQuery(Name = "pageSize")] int pageSize, HttpContext context, IAliasService svc)
+    {
+        if(page < 1 || pageSize < 0 || pageSize > 100) Task.FromResult(Results.BadRequest("Invalid page"));
+        const int numberOfAliases = 110;
+        
+        var response = new GetAliasesResponse
+        {
+            Aliases = [],
+            TotalAliases = numberOfAliases,
+            TotalPages = numberOfAliases % pageSize
+        };
+        
+        var startIndex = (page - 1) * pageSize;
+        
+        for (var i = 0; i < numberOfAliases; i++)
+        {
+            if(startIndex > i) continue;
+            if(response.Aliases.Count >= pageSize) break;
+            
+           var dummyAlias = new AliasEntryDto
+            {
+                Alias = i.ToString(CultureInfo.InvariantCulture),
+                Url = "https://google.com",
+                ExpiresAt = DateTimeOffset.UtcNow.AddDays(30)
+            };
+           
+           var alias = new AliasCreatedResponse(dummyAlias, 
+               UriHelper.BuildAbsolute(context.Request.Scheme, context.Request.Host, "uri".EnsureLeadingSlash(), dummyAlias.Alias.EnsureLeadingSlash()))
+           {
+               Url = dummyAlias.Url
+           };
+           
+           response.Aliases.Add(alias);
+        }
+        
+        return Task.FromResult(Results.Ok(response));
+    }
 }

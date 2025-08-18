@@ -14,3 +14,9 @@ public class AliasCreatedResponse: AliasEntryDto
         ShortUrl = shortUrl;
     }
 }
+
+public class GetAliasesResponse {
+    public required List<AliasCreatedResponse> Aliases { get; init; }
+    public required int TotalAliases { get; init; }
+    public required int TotalPages { get; init; }
+}

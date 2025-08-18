@@ -25,10 +25,10 @@
   <mat-card *ngIf="createdAlias">
     <mat-card-title>Generated URL Details</mat-card-title>
     <mat-card-content>
-      <p><strong>Short URL:</strong> <a [href]="createdAlias.shortUrl" target="_blank">{{ createdAlias.shortUrl }}</a></p>
-      <p><strong>Alias:</strong> {{ createdAlias.alias }}</p>
-      <p><strong>Expiration Date:</strong> {{ createdAlias.expiresAt ? (createdAlias.expiresAt | date: 'medium') : 'No expiration' }}</p>
-      <p><strong>Original URL:</strong> <a [href]="createdAlias.url" target="_blank">{{ createdAlias.url }}</a></p>
+      <p><strong>Short URL: </strong> <a [href]="createdAlias.shortUrl" target="_blank">{{ createdAlias.shortUrl }}</a></p>
+      <p><strong>Alias: </strong> {{ createdAlias.alias }}</p>
+      <p><strong>Expiration Date: </strong> {{ createdAlias.expiresAt ? (createdAlias.expiresAt | date: 'medium') : 'No expiration' }}</p>
+      <p><strong>Original URL: </strong> <a [href]="createdAlias.url" target="_blank">{{ createdAlias.url }}</a></p>
       <button mat-raised-button color="accent" (click)="copyToClipboard(createdAlias.shortUrl)">Copy Short URL</button>
     </mat-card-content>
   </mat-card>

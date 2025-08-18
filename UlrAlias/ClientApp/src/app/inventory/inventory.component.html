@@ -1,1 +1,40 @@
-<p>inventory works!</p>
+<mat-card>
+  <mat-card-title style="margin-left: 1rem">Alias Statistics</mat-card-title>
+  <mat-card-content>
+    <mat-form-field appearance="fill">
+      <mat-label>Filter</mat-label>
+      <input matInput (input)="onFilterChange($event)" placeholder="Search by alias or URL">
+    </mat-form-field>
+    <table mat-table [dataSource]="aliases" class="mat-elevation-z8">
+      <ng-container matColumnDef="alias">
+        <th mat-header-cell *matHeaderCellDef> Alias </th>
+        <td mat-cell *matCellDef="let alias"> {{ alias.alias }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="expiresAt">
+        <th mat-header-cell *matHeaderCellDef> Expiration Date </th>
+        <td mat-cell *matCellDef="let alias"> {{ alias.expiresAt ? (alias.expiresAt | date: 'medium') : 'No expiration' }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="shortUrl">
+        <th mat-header-cell *matHeaderCellDef> Short URL </th>
+        <td mat-cell *matCellDef="let alias"> <a [href]="alias.shortUrl" target="_blank">{{ alias.shortUrl }}</a> </td>
+      </ng-container>
+
+      <ng-container matColumnDef="clicks">
+        <th mat-header-cell *matHeaderCellDef> Number of Visits </th>
+        <td mat-cell *matCellDef="let alias"> {{ alias.clicks }} </td>
+      </ng-container>
+
+      <ng-container matColumnDef="url">
+        <th mat-header-cell *matHeaderCellDef> Short URL </th>
+        <td mat-cell *matCellDef="let alias"> <a [href]="alias.shortUrl" target="_blank">{{ alias.shortUrl }}</a> </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+    <mat-paginator [length]="totalAliases" [pageSize]="pageSize" [pageSizeOptions]="[5, 10, 25, 100]" (page)="onPageChange($event)">
+    </mat-paginator>
+  </mat-card-content>
+</mat-card>
