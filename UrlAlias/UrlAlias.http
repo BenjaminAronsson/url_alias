@@ -1,0 +1,14 @@
+@UrlAlias_HostAddress = http://localhost:32769
+@alias = demo
+
+POST {{UrlAlias_HostAddress}}/api/aliases/
+Accept: application/json
+
+###
+GET {{UrlAlias_HostAddress}}/api/aliases/{{alias}}/
+Accept: application/json
+
+###
+GET {{UrlAlias_HostAddress}}/uri/{{alias}}/
+
+###
