@@ -1,6 +1,7 @@
 using UlrAlias.Backend.Models;
 using Microsoft.EntityFrameworkCore;
 using UlrAlias.Backend.Data;
+using System.Linq;
 
 namespace UlrAlias.Backend.Services;
 
@@ -15,7 +16,12 @@ public class AliasService : IAliasService
 
     public async Task<AddResult> AddAsync(AliasEntry entry, CancellationToken cancellationToken = default)
     {
-        if (await _dbContext.AliasEntries.AnyAsync(e => e.Alias == entry.Alias, cancellationToken))
+        var now = DateTime.UtcNow;
+        var duplicates = await _dbContext.AliasEntries
+            .Where(e => e.Alias == entry.Alias)
+            .AsNoTracking()
+            .ToListAsync(cancellationToken);
+        if (duplicates.Any(e => e.ExpiresAt == null || e.ExpiresAt > now))
             return AddResult.Exists;
 
         await _dbContext.AliasEntries.AddAsync(entry, cancellationToken);
@@ -25,24 +31,28 @@ public class AliasService : IAliasService
 
     public async Task<AliasEntry?> TryGetAsync(string alias, CancellationToken cancellationToken = default)
     {
-        return await _dbContext.AliasEntries.FirstOrDefaultAsync(e => e.Alias == alias, cancellationToken);
+        var now = DateTime.UtcNow;
+        return await _dbContext.AliasEntries
+            .FirstOrDefaultAsync(e => e.Alias == alias && (e.ExpiresAt == null || e.ExpiresAt > now), cancellationToken);
     }
 
     public async Task<IEnumerable<AliasEntry>> FindAsync(int pageIndex, int pageSize, CancellationToken cancellationToken = default)
     {
+        var now = DateTime.UtcNow;
         return await _dbContext.AliasEntries
             .AsNoTracking()
+            .Where(e => e.ExpiresAt == null || e.ExpiresAt > now)
             .OrderByDescending(e => e.Alias)
             .Skip(pageIndex * pageSize)
             .Take(pageSize)
-            .ToListAsync(cancellationToken)
-            .ContinueWith(task => task.Result.AsEnumerable(), cancellationToken);
+            .ToListAsync(cancellationToken);
     }
 
     public async Task<int> CountAsync(CancellationToken cancellationToken = default)
     {
+        var now = DateTime.UtcNow;
         return await _dbContext.AliasEntries
             .AsNoTracking()
-            .CountAsync(cancellationToken);
+            .CountAsync(e => e.ExpiresAt == null || e.ExpiresAt > now, cancellationToken);
     }
 }

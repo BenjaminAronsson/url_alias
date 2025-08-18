@@ -25,7 +25,7 @@ namespace UlrAlias.Migrations
                     b.Property<string>("Alias")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTimeOffset?>("ExpiresAt")
+                    b.Property<DateTime?>("ExpiresAt")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Url")
