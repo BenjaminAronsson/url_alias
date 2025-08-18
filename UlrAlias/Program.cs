@@ -4,6 +4,9 @@ using Microsoft.AspNetCore.ResponseCompression;
 using Microsoft.Extensions.FileProviders;
 using UlrAlias.Backend.endpoints;
 using UlrAlias.Backend.Extensions;
+using Microsoft.EntityFrameworkCore;
+using UlrAlias.Backend.Data;
+using UlrAlias.Backend.Models;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,21 +15,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddUrlAliasServices();
-
-builder.Services.Configure<ForwardedHeadersOptions>(o =>
-{
-    o.ForwardedHeaders = ForwardedHeaders.XForwardedProto | ForwardedHeaders.XForwardedFor;
-});
-
-builder.Services.AddResponseCompression(o =>
-{
-    o.EnableForHttps = true;
-    o.Providers.Add<BrotliCompressionProvider>();
-    o.Providers.Add<GzipCompressionProvider>();
-});
-builder.Services.Configure<BrotliCompressionProviderOptions>(o => o.Level = CompressionLevel.Fastest);
-builder.Services.Configure<GzipCompressionProviderOptions>(o => o.Level = CompressionLevel.Fastest);
+builder.Services.AddUrlAliasServices(builder.Configuration);
 
 var app = builder.Build();
 
@@ -97,4 +86,31 @@ app.MapFallback(async context =>
     context.Response.StatusCode = StatusCodes.Status404NotFound;
 });
 
+await SetupDb(app);
+
 await app.RunAsync();
+return;
+
+
+#region Populate db
+async Task SetupDb(WebApplication webApplication)
+{
+    using var scope = webApplication.Services.CreateScope();
+    var dbContext = scope.ServiceProvider.GetRequiredService<AliasDbContext>();
+
+    // Apply migrations to ensure the database schema is created
+    await dbContext.Database.MigrateAsync();
+
+    if (!await dbContext.AliasEntries.AnyAsync())
+    {
+        var entries = Enumerable.Range(1, 1000).Select(i => new AliasEntry(
+            $"alias{i}",
+            $"https://google.com/?q={i}",
+            DateTimeOffset.UtcNow.AddDays(2 + i)
+        ));
+        dbContext.AliasEntries.AddRange(entries);
+        await dbContext.SaveChangesAsync();
+    }
+}
+#endregion
+
