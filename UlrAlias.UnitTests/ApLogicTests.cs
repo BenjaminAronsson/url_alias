@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Moq;
-using UlrAlias.Backend.Dtos;
+using UlrAlias.Backend.DTos;
 using UlrAlias.Backend.endpoints;
 using UlrAlias.Backend.Models;
 using UlrAlias.Backend.Services;

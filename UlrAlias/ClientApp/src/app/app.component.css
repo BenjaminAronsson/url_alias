@@ -1,0 +1,13 @@
+.spacer {
+  flex: 1;
+}
+
+mat-toolbar-row nav a {
+  margin: 0 10px;
+}
+
+body {
+  font-family: Roboto, Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}

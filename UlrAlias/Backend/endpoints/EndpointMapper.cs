@@ -1,4 +1,5 @@
-using UlrAlias.Backend.Dtos;
+using UlrAlias.Backend.DTos;
+using UlrAlias.Backend.Dtos.Responses;
 
 namespace UlrAlias.Backend.endpoints;
 
@@ -13,12 +14,18 @@ public static class EndpointMapper
 
         group.MapGet("/aliases/{alias}", ApLogic.GetAlias)
             .WithOpenApi()
-            .Produces<AliasEntryDto>()
+            .Produces<AliasCreatedResponse>()
             .ProducesProblem(StatusCodes.Status500InternalServerError);
 
         group.MapPost("/aliases", ApLogic.PostAlias)
             .WithOpenApi()
-            .Produces<AliasEntryDto>()
+            .Produces<AliasCreatedResponse>()
             .ProducesProblem(StatusCodes.Status500InternalServerError);
+
+        group.MapGet("/aliases", ApLogic.GetAllAliases)
+            .WithOpenApi()
+            .Produces<GetAliasesResponse>()
+            .ProducesProblem(StatusCodes.Status500InternalServerError)
+            .WithDescription("Fetches aliases with optional pagination and filtering.");
     }
 }

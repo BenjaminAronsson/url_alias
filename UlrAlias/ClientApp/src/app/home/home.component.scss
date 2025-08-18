@@ -1,0 +1,30 @@
+.url-shortener {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin: 2rem;
+  align-content: center;
+}
+
+mat-card {
+  margin-top: 1rem;
+  width: 60vw;
+  align-self: center;
+  padding: 1rem;
+}
+
+mat-card-title {
+  margin-bottom: 1rem;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+mat-form-field {
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+button {
+  margin-top: 1rem;
+}
+

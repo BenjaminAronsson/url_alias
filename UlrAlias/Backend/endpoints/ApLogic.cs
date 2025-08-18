@@ -1,5 +1,9 @@
-﻿using Microsoft.AspNetCore.Http.Extensions;
-using UlrAlias.Backend.Dtos;
+﻿using System.Globalization;
+using Microsoft.AspNetCore.Http.Extensions;
+using Microsoft.AspNetCore.Mvc;
+using UlrAlias.Backend.DTos;
+using UlrAlias.Backend.Dtos.Responses;
+using UlrAlias.Backend.Extensions;
 using UlrAlias.Backend.Models;
 using UlrAlias.Backend.Services;
 using UlrAlias.Backend.Validators;
@@ -54,16 +58,55 @@ public static class ApLogic
         var uri = UriHelper.BuildAbsolute(
             context.Request.Scheme,
             context.Request.Host,
-            string.Empty,
-            EnsureLeadingSlash(input.Alias));
+            "uri".EnsureLeadingSlash(),
+            input.Alias.EnsureLeadingSlash());
 
+        var response = new AliasCreatedResponse(input, uri)
+        {
+            Url = input.Url
+        };
+        
         return result == AddResult.Added
-            ? Results.Created(uri, input)
+            ? Results.Created(uri, response)
             : Results.Conflict(new { message = "Alias already exists" });
     }
 
-    private static string EnsureLeadingSlash(string? value)
+
+    public static Task<IResult> GetAllAliases([FromQuery(Name = "page")] int page, [FromQuery(Name = "pageSize")] int pageSize, HttpContext context, IAliasService svc)
     {
-        return "/" + (value ?? string.Empty).TrimStart('/');
+        if(page < 1 || pageSize < 0 || pageSize > 100) Task.FromResult(Results.BadRequest("Invalid page"));
+        const int numberOfAliases = 110;
+        
+        var response = new GetAliasesResponse
+        {
+            Aliases = [],
+            TotalAliases = numberOfAliases,
+            TotalPages = numberOfAliases % pageSize
+        };
+        
+        var startIndex = (page - 1) * pageSize;
+        
+        for (var i = 0; i < numberOfAliases; i++)
+        {
+            if(startIndex > i) continue;
+            if(response.Aliases.Count >= pageSize) break;
+            
+           var dummyAlias = new AliasEntryDto
+            {
+                Alias = i.ToString(CultureInfo.InvariantCulture),
+                Url = "https://google.com",
+                ExpiresAt = DateTimeOffset.UtcNow.AddDays(30)
+            };
+           
+           var alias = new AliasCreatedResponse(dummyAlias, 
+               UriHelper.BuildAbsolute(context.Request.Scheme, context.Request.Host, "uri".EnsureLeadingSlash(), dummyAlias.Alias.EnsureLeadingSlash()))
+           {
+               Url = dummyAlias.Url
+           };
+           
+           response.Aliases.Add(alias);
+        }
+        
+        return Task.FromResult(Results.Ok(response));
     }
 }
