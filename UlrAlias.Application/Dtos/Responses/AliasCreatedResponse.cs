@@ -1,6 +1,6 @@
-using UlrAlias.Backend.DTos;
+using UlrAlias.Application.Dtos;
 
-namespace UlrAlias.Backend.Dtos.Responses;
+namespace UlrAlias.Application.Dtos.Responses;
 
 public class AliasCreatedResponse: AliasEntryDto
 {

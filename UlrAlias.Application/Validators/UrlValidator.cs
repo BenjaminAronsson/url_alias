@@ -1,4 +1,4 @@
-namespace UlrAlias.Backend.Validators;
+namespace UlrAlias.Application.Validators;
 
 public static class UrlValidator
 {

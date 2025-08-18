@@ -1,7 +1,7 @@
-using UlrAlias.Backend.DTos;
-using UlrAlias.Backend.Dtos.Responses;
+using UlrAlias.Application.Dtos;
+using UlrAlias.Application.Dtos.Responses;
 
-namespace UlrAlias.Backend.endpoints;
+namespace UlrAlias.Web.Endpoints;
 
 public static class EndpointMapper
 {

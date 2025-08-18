@@ -1,14 +1,14 @@
 ﻿using System.Globalization;
 using Microsoft.AspNetCore.Http.Extensions;
 using Microsoft.AspNetCore.Mvc;
-using UlrAlias.Backend.DTos;
-using UlrAlias.Backend.Dtos.Responses;
-using UlrAlias.Backend.Extensions;
-using UlrAlias.Backend.Models;
-using UlrAlias.Backend.Services;
-using UlrAlias.Backend.Validators;
+using UlrAlias.Application.Dtos;
+using UlrAlias.Application.Dtos.Responses;
+using UlrAlias.Application.Services;
+using UlrAlias.Application.Validators;
+using UlrAlias.Domain.Models;
+using UlrAlias.Web.Extensions;
 
-namespace UlrAlias.Backend.endpoints;
+namespace UlrAlias.Web.Endpoints;
 
 public static class ApLogic
 {

@@ -63,9 +63,6 @@
         <None Include="$(SpaRoot)**" Exclude="$(SpaRoot)node_modules\**" />
     </ItemGroup>
 
-    <ItemGroup>
-      <Folder Include="Backend\Dtos\Requests\" />
-    </ItemGroup>
 
     <Target Name="DebugEnsureNodeEnv" BeforeTargets="Build" Condition=" '$(Configuration)' == 'Debug' And !Exists('$(SpaRoot)node_modules') ">
         <Exec Command="node --version" ContinueOnError="true">
@@ -89,5 +86,10 @@
             </ResolvedFileToPublish>
         </ItemGroup>
     </Target>
+
+    <ItemGroup>
+        <ProjectReference Include="..\\UlrAlias.Application\\UlrAlias.Application.csproj" />
+        <ProjectReference Include="..\\UlrAlias.Infrastructure\\UlrAlias.Infrastructure.csproj" />
+    </ItemGroup>
 
 </Project>

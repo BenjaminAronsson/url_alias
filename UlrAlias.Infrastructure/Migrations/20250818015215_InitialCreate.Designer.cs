@@ -4,11 +4,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
-using UlrAlias.Backend.Data;
+using UlrAlias.Infrastructure.Data;
 
 #nullable disable
 
-namespace UlrAlias.Migrations
+namespace UlrAlias.Infrastructure.Migrations
 {
     [DbContext(typeof(AliasDbContext))]
     [Migration("20250818015215_InitialCreate")]
@@ -20,7 +20,7 @@ namespace UlrAlias.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.19");
 
-            modelBuilder.Entity("UlrAlias.Backend.Models.AliasEntry", b =>
+            modelBuilder.Entity("UlrAlias.Domain.Models.AliasEntry", b =>
                 {
                     b.Property<string>("Alias")
                         .HasColumnType("TEXT");

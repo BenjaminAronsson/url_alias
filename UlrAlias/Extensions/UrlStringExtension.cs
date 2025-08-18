@@ -1,4 +1,4 @@
-namespace UlrAlias.Backend.Extensions;
+namespace UlrAlias.Web.Extensions;
 
 public static class UrlStringExtension {
     public static string EnsureLeadingSlash(this string? value)
