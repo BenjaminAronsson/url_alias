@@ -6,12 +6,17 @@
       width="40"
     />
     <span>Url shortener</span>
-    <span class="spacer"></span>
     <nav>
       <a mat-button routerLink="/home" routerLinkActive="active">Home</a>
       <a mat-button routerLink="/inventory" routerLinkActive="active">Inventory</a>
       <a mat-button routerLink="/swagger" routerLinkActive="active">Swagger</a>
     </nav>
+    <span class="spacer"></span>
+    <mat-slide-toggle
+      [checked]="theme.current === 'theme-dark'"
+      (change)="toggleTheme()">
+      Dark mode
+    </mat-slide-toggle>
   </mat-toolbar-row>
 </mat-toolbar>
 

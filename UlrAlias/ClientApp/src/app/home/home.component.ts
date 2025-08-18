@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { UrlShortenerService } from '../services/url-shortener.service';
-import {AliasDto} from "../models/AliasDto";
+import { AliasDto } from "../models/AliasDto";
 
 @Component({
   selector: 'app-home',
@@ -14,9 +14,12 @@ export class HomeComponent {
   createdAlias: AliasDto | null = null;
 
   isLoading: boolean = false;
-  disabled: boolean = this.isLoading || !this.url;
 
   constructor(private readonly urlShortenerService: UrlShortenerService) {}
+
+  get disabled(): boolean {
+    return this.isLoading || !this.url?.trim();
+  }
 
   generateShortUrl() {
     this.isLoading = true;
@@ -55,6 +58,5 @@ export class HomeComponent {
     this.url = ''; // Clear the input field after successful creation
     this.alias = ''; // Clear the alias field after successful creation
     this.expireDate = null; // Reset expire date
-    this.disabled = true; // Disable button after creation
   }
 }

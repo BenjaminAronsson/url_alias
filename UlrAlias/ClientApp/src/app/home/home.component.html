@@ -1,6 +1,6 @@
 <div class="url-shortener">
   <mat-card>
-    <mat-card-title >Generate your own short url</mat-card-title>
+    <mat-card-title>Generate your own short URL</mat-card-title>
     <mat-card-content>
       <form>
         <mat-form-field appearance="fill">
@@ -17,15 +17,19 @@
           <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
           <mat-datepicker #picker></mat-datepicker>
         </mat-form-field>
-        <button mat-raised-button color="primary" [disabled]="disabled" (click)="generateShortUrl()">Generate Short</button>
+        <button mat-raised-button color="primary" [disabled]="disabled" (click)="generateShortUrl()">Generate Short url</button>
       </form>
     </mat-card-content>
   </mat-card>
+
   <mat-card *ngIf="createdAlias">
-    <mat-card-title>Generated url</mat-card-title>
+    <mat-card-title>Generated URL Details</mat-card-title>
     <mat-card-content>
-      <a [href]="createdAlias.shortUrl">{{ createdAlias.shortUrl }}</a>
-      <button mat-raised-button color="accent" (click)="copyToClipboard(createdAlias.shortUrl)">Copy to Clipboard</button>
+      <p><strong>Short URL:</strong> <a [href]="createdAlias.shortUrl" target="_blank">{{ createdAlias.shortUrl }}</a></p>
+      <p><strong>Alias:</strong> {{ createdAlias.alias }}</p>
+      <p><strong>Expiration Date:</strong> {{ createdAlias.expiresAt ? (createdAlias.expiresAt | date: 'medium') : 'No expiration' }}</p>
+      <p><strong>Original URL:</strong> <a [href]="createdAlias.url" target="_blank">{{ createdAlias.url }}</a></p>
+      <button mat-raised-button color="accent" (click)="copyToClipboard(createdAlias.shortUrl)">Copy Short URL</button>
     </mat-card-content>
   </mat-card>
 </div>

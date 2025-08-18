@@ -1,4 +1,3 @@
-
 export interface AliasDto {
   url: string;
   alias: string;
