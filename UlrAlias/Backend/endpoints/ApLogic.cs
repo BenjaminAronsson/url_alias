@@ -63,7 +63,9 @@ public static class ApLogic
 
         var response = new AliasCreatedResponse(input, uri)
         {
-            Url = input.Url
+            Url = input.Url,
+            UserId = input.UserId,
+            UsageCount = input.UsageCount
         };
         
         return result == AddResult.Added
@@ -92,7 +94,9 @@ public static class ApLogic
                     {
                         Alias = a.Alias,
                         Url = a.Url,
-                        ExpiresAt = a.ExpiresAt
+                        ExpiresAt = a.ExpiresAt,
+                        UserId = a.UserId,
+                        UsageCount = a.UsageCount
                     },
                     UriHelper.BuildAbsolute(
                         context.Request.Scheme,
@@ -105,7 +109,9 @@ public static class ApLogic
                         context.Request.Scheme,
                         context.Request.Host,
                         "uri".EnsureLeadingSlash(),
-                        a.Alias.EnsureLeadingSlash())
+                        a.Alias.EnsureLeadingSlash()),
+                    UserId = a.UserId,
+                    UsageCount = a.UsageCount
                 })
                 .ToList(),
             TotalAliases = numberOfAliases,

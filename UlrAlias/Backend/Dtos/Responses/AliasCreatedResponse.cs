@@ -11,6 +11,8 @@ public class AliasCreatedResponse: AliasEntryDto
         Alias = dto.Alias;
         Url = dto.Url;
         ExpiresAt = dto.ExpiresAt;
+        UserId = dto.UserId;
+        UsageCount = dto.UsageCount;
         ShortUrl = shortUrl;
     }
 }
